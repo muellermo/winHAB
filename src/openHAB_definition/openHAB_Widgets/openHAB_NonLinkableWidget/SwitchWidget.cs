@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using winHAB.Interfaces;
 
 namespace winHAB.openHAB_definition.openHAB_Widgets.openHAB_NonLinkableWidget
 {

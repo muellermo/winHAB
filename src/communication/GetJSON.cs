@@ -26,7 +26,7 @@ namespace winHAB.communication
         private UriBuilder sh_uriBuilder { get; set; }
         public delegate void jsonReady(JsonOpenHABDataContract result);
         public event jsonReady sh_downloadFinished;
-        public String json { get; set; }
+        //public String json { get; set; }
         public Boolean secured { get; set; }
         private HttpClient httpClient;
         private HttpBaseProtocolFilter filter;
@@ -176,61 +176,85 @@ namespace winHAB.communication
 
 
         #region Establish Connection happend here
+        private String tmpjson = "";
         public async void connectAndLoad()
         {
 
 
-            try
-            {
-                //Unsafe Operation, when the 
+            //try
+            //{
+            //Unsafe Operation, when the 
 
-                //httpResponseMessage = await httpClient.GetStringAsync(uriToOpenHAB.Uri);//.GetAsync(uriToOpenHAB.Uri);
-                String json = await httpClient.GetStringAsync(uriToOpenHAB.Uri); //httpResponseMessage.Content.ToString();
-                if(json.Contains("\"widget\":{"))
-                {
-                    int index = json.IndexOf("\"widget\":{");
-                    char y = json[index+8];
-                    json.Insert(index, "[");
-                    ;
-                }
-                sh_downloadFinished(parser.parse(json));
-            }
-            catch (Exception ex)
+            //httpResponseMessage = await httpClient.GetStringAsync(uriToOpenHAB.Uri);//.GetAsync(uriToOpenHAB.Uri);
+            if (filter != null)
             {
-                if (!_toastOnce)
+                
+                httpClient = new HttpClient(this.filter); if (httpResponseMessage != null)
+                    tmpjson = httpResponseMessage.Content.ToString();
+            }
+            else
+            {
+                httpClient = new HttpClient(); if (httpResponseMessage != null)
+                    tmpjson = httpResponseMessage.Content.ToString();
+            }
+            httpResponseMessage = await httpClient.GetAsync(uriToOpenHAB.Uri); //httpResponseMessage.Content.ToString();
+            String json = httpResponseMessage.Content.ToString();
+            //if(json.Contains("\"widget\":{"))
+            //{
+            //    int index = json.IndexOf("\"widget\":{");
+            //    char y = json[index+8];
+            //    json.Insert(index, "[");
+            //    ;
+            //}
+            //StorageFolder storageFolder = KnownFolders.DocumentsLibrary;
+            //Random rnd = new Random();
+            //String fileName =Convert.ToString(rnd.Next())+".txt";
+            //StorageFile storageFile = await storageFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            if (!tmpjson.Equals(json))
+                System.Diagnostics.Debug.WriteLine("");
+            //httpClient.Dispose();
+            sh_downloadFinished(parser.parse(json));
+            //}
+            //catch (Exception ex)
+            //{
+            //    if (!_toastOnce)
+            //    {
+            //Show Toast, if there was an Error
+            //ToastTemplateType toastTemplate = ToastTemplateType.ToastImageAndText01;
+            //XmlDocument toastXML = ToastNotificationManager.GetTemplateContent(toastTemplate);
+            //XmlNodeList toastTextElements = toastXML.GetElementsByTagName("text");
+            //toastTextElements[0].AppendChild(toastXML.CreateTextNode("An Error occured, while setting up the Connection" + ex.StackTrace));
+            //XmlNodeList toastImageElements = toastXML.GetElementsByTagName("image");
+            //((XmlElement)toastImageElements[0]).SetAttribute("src", "ms-appx:///Assets/images/icon.png");
+            //((XmlElement)toastImageElements[0]).SetAttribute("alt", "red graphic");
+            //ToastNotification toast = new ToastNotification(toastXML);
+            //ToastNotificationManager.CreateToastNotifier().Show(toast);
+            //_toastOnce = true;
+
+
+            //MessageDialog dialog = new MessageDialog(ex.Message + "\n" + ex.StackTrace, "Error while sending a request");
+            //dialog.Options = MessageDialogOptions.AcceptUserInputAfterDelay;
+
+
+            //dialog.ShowAsync();
+            //}
+            /*                    try
                 {
-                    //Show Toast, if there was an Error
-                    //ToastTemplateType toastTemplate = ToastTemplateType.ToastImageAndText01;
-                    //XmlDocument toastXML = ToastNotificationManager.GetTemplateContent(toastTemplate);
-                    //XmlNodeList toastTextElements = toastXML.GetElementsByTagName("text");
-                    //toastTextElements[0].AppendChild(toastXML.CreateTextNode("An Error occured, while setting up the Connection" + ex.StackTrace));
-                    //XmlNodeList toastImageElements = toastXML.GetElementsByTagName("image");
-                    //((XmlElement)toastImageElements[0]).SetAttribute("src", "ms-appx:///Assets/images/icon.png");
-                    //((XmlElement)toastImageElements[0]).SetAttribute("alt", "red graphic");
-                    //ToastNotification toast = new ToastNotification(toastXML);
-                    //ToastNotificationManager.CreateToastNotifier().Show(toast);
-                    //_toastOnce = true;
+                    UriBuilder uri = new UriBuilder(item.link);
+
+                    HttpResponseMessage response = await httpClient.PostAsync(uri.Uri, new HttpStringContent(method));
+                }
+                catch (Exception ex)
+                {
                     MessageDialog dialog = new MessageDialog(ex.Message + "\n" + ex.StackTrace, "Error while sending a request");
                     dialog.Options = MessageDialogOptions.AcceptUserInputAfterDelay;
-                    //dialog.ShowAsync();
+                    dialog.ShowAsync();
                 }
-                /*                    try
-                    {
-                        UriBuilder uri = new UriBuilder(item.link);
+                finally
+                {
 
-                        HttpResponseMessage response = await httpClient.PostAsync(uri.Uri, new HttpStringContent(method));
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageDialog dialog = new MessageDialog(ex.Message + "\n" + ex.StackTrace, "Error while sending a request");
-                        dialog.Options = MessageDialogOptions.AcceptUserInputAfterDelay;
-                        dialog.ShowAsync();
-                    }
-                    finally
-                    {
-
-                    }*/
-            }
+                }*/
+            //}
 
         }
         #endregion

@@ -173,6 +173,7 @@ namespace JSON_Parser.Parser
         {
             //XMLOpenHABDataContract sh_jsonresult1;
             //json = json.Replace("\\\\", "\\");;//.Replace("\\\\", "\\").Replace("\\\"", "\"");
+            //JsonOpenHABDataContract.widgets.Clear();
             MemoryStream stream = new MemoryStream(UTF8Encoding.UTF8.GetBytes(json));
             stream.Position = 0;
             //XmlSerializer x = new XmlSerializer(typeof(XMLOpenHABDataContract));

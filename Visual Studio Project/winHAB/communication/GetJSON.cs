@@ -206,13 +206,13 @@ namespace winHAB.communication
             //    json.Insert(index, "[");
             //    ;
             //}
-            StorageFolder storageFolder = KnownFolders.DocumentsLibrary;
-            Random rnd = new Random();
-            String fileName =Convert.ToString(rnd.Next())+".txt";
-            StorageFile storageFile = await storageFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            //StorageFolder storageFolder = KnownFolders.DocumentsLibrary;
+            //Random rnd = new Random();
+            //String fileName =Convert.ToString(rnd.Next())+".txt";
+            //StorageFile storageFile = await storageFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
             if (!tmpjson.Equals(json))
                 System.Diagnostics.Debug.WriteLine("");
-            httpClient.Dispose();
+            //httpClient.Dispose();
             sh_downloadFinished(parser.parse(json));
             //}
             //catch (Exception ex)

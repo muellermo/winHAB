@@ -297,9 +297,30 @@ namespace winHAB
         /*
          * NonLinkable Widgets END
          * */
+
+        /// <summary>
+        /// Function to clear the current widgets, to prevent the lists of overflow
+        /// </summary>
+        public void clearWidgetLists()
+        {
+            currentFrameWidgets.Clear();
+            currentGroupWidgets.Clear();
+            currentImageWidgets.Clear();
+            currentTextWidgets.Clear();
+            currentChartWidget.Clear();
+            currentColorpickerWidget.Clear();
+            currentListWidget.Clear();
+            currentSelectionWidget.Clear();
+            currentSetpointWidget.Clear();
+            currentSliderWidget.Clear();
+            currentSwitchWidgets.Clear();
+            currentVideoWidget.Clear();
+            currentWebViewWidget.Clear();
+        }
         public void updateUI()
         {
             currentWidgets.Clear();
+            clearWidgetLists();
             int counter = 0;
             AbstractWidget tmp1;
             while (counter != mainNav.Items.Count)

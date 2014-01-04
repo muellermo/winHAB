@@ -57,7 +57,7 @@ namespace JSON_Parser.Parser
         public String link { get; set; }
         [DataMember]
         public LinkedList<Widget> widget { get; set; }
-        
+
     }
     #endregion
     #region Widget
@@ -77,7 +77,10 @@ namespace JSON_Parser.Parser
             set
             {
                 _widgetId = value;
+                try { 
                 JsonOpenHABDataContract.widgets.Add(this.widgetId, this);
+                }   catch
+                {}
                 NotifyPropertyChanged("widgetId");
             }
         }

@@ -5,10 +5,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using winHAB.Interfaces;
 
 namespace winHAB.openHAB_definition.openHAB_Widgets
 {
-    public class AbstractWidget:INotifyPropertyChanged
+    public class AbstractWidget:INotifyPropertyChanged, IAbstractWidget
     {
         private String _widgetId { get; set; }
 
