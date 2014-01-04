@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EDED193E-9BE3-40FE-A753-416514247F90}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>winHAB</RootNamespace>
+    <AssemblyName>winHAB</AssemblyName>
+    <DefaultLanguage>de-DE</DefaultLanguage>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+    <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PackageCertificateKeyFile>winHAB_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Folder Include="openHAB_definition\openHAB_Widgets\openHAB_otherWidgets\" />
+    <Folder Include="Toasts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BugReporter\ReportABugManager.xaml.cs">
+      <DependentUpon>ReportABugManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ColorDialog\ColorDialog.xaml.cs">
+      <DependentUpon>ColorDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="communication\ConnectionTypesEnum.cs" />
+    <Compile Include="communication\GetJSON.cs" />
+    <Compile Include="communication\PostMessage.cs" />
+    <Compile Include="ErrorManager\ErrorManager.cs" />
+    <Compile Include="FirstStart\ConfigureFirstStart.xaml.cs">
+      <DependentUpon>ConfigureFirstStart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GroupSelectors\ListGroupStyleSelector.cs" />
+    <Compile Include="Gui\MainNav.xaml.cs">
+      <DependentUpon>MainNav.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="openHAB_definition\openHAB_Items\ColorItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Items\ContactItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Items\DateTimeItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Items\GroupItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Items\DimmerItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Items\NumberItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Items\RollershutterItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Items\StringItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Items\SwitchItem.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\AbstractWidget.cs" />
+    <Compile Include="Interfaces\IAbstractWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_LinkableWidget\FrameWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_LinkableWidget\GroupWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_LinkableWidget\ImageWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_LinkableWidget\TextWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\ChartWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\ColorWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\ContactWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\ListWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\NumberWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\SelectionWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\SetpointWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\SliderWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\SwitchWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\VideoWidget.cs" />
+    <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\WebViewWidget.cs" />
+    <Compile Include="Parser\DataRecycler.cs" />
+    <Compile Include="Parser\JSONParser.cs" />
+    <Compile Include="Parser\JsonOpenHABDataContract.cs" />
+    <Compile Include="Parser\XMLOpenHABDataContract.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsManager\AdvancedSettings.xaml.cs">
+      <DependentUpon>AdvancedSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsManager\SecuritySettingsFlyout.xaml.cs">
+      <DependentUpon>SecuritySettingsFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsManager\Settings.cs" />
+    <Compile Include="SettingsManager\WinHABSettingsFlyout.xaml.cs">
+      <DependentUpon>WinHABSettingsFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateSelectoren\ItemTemplateSelector.cs" />
+    <Compile Include="TemplateSelectoren\MainTemplateSelector.cs" />
+    <Compile Include="WidgetManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <None Include="winHAB_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\hasChildren.png" />
+    <Content Include="Assets\images\app-icon.png" />
+    <Content Include="Assets\images\bath.png" />
+    <Content Include="Assets\images\bedroom.png" />
+    <Content Include="Assets\images\bluetooth.png" />
+    <Content Include="Assets\images\boy0.png" />
+    <Content Include="Assets\images\boy1.png" />
+    <Content Include="Assets\images\boy2.png" />
+    <Content Include="Assets\images\boy3.png" />
+    <Content Include="Assets\images\boy4.png" />
+    <Content Include="Assets\images\boy5.png" />
+    <Content Include="Assets\images\boy6.png" />
+    <Content Include="Assets\images\boy7.png" />
+    <Content Include="Assets\images\calendar.png" />
+    <Content Include="Assets\images\cellar.png" />
+    <Content Include="Assets\images\chart.png" />
+    <Content Include="Assets\images\child1-off.png" />
+    <Content Include="Assets\images\child1.png" />
+    <Content Include="Assets\images\child2-off.png" />
+    <Content Include="Assets\images\child2.png" />
+    <Content Include="Assets\images\cistern-0.png" />
+    <Content Include="Assets\images\cistern-10.png" />
+    <Content Include="Assets\images\cistern-100.png" />
+    <Content Include="Assets\images\cistern-20.png" />
+    <Content Include="Assets\images\cistern-30.png" />
+    <Content Include="Assets\images\cistern-40.png" />
+    <Content Include="Assets\images\cistern-50.png" />
+    <Content Include="Assets\images\cistern-60.png" />
+    <Content Include="Assets\images\cistern-70.png" />
+    <Content Include="Assets\images\cistern-80.png" />
+    <Content Include="Assets\images\cistern-90.png" />
+    <Content Include="Assets\images\cistern.png" />
+    <Content Include="Assets\images\climate-on.png" />
+    <Content Include="Assets\images\climate.png" />
+    <Content Include="Assets\images\clock-on.png" />
+    <Content Include="Assets\images\clock.png" />
+    <Content Include="Assets\images\colorwheel.png" />
+    <Content Include="Assets\images\contact-ajar.png" />
+    <Content Include="Assets\images\contact-closed.png" />
+    <Content Include="Assets\images\contact-open.png" />
+    <Content Include="Assets\images\contact.png" />
+    <Content Include="Assets\images\corridor.png" />
+    <Content Include="Assets\images\door-closed.png" />
+    <Content Include="Assets\images\door-open.png" />
+    <Content Include="Assets\images\energy.png" />
+    <Content Include="Assets\images\favicon.ico" />
+    <Content Include="Assets\images\fire-on.png" />
+    <Content Include="Assets\images\fire.png" />
+    <Content Include="Assets\images\firstfloor.png" />
+    <Content Include="Assets\images\frontdoor-closed.png" />
+    <Content Include="Assets\images\frontdoor-open.png" />
+    <Content Include="Assets\images\garage.png" />
+    <Content Include="Assets\images\garagedoor-ajar.png" />
+    <Content Include="Assets\images\garagedoor-closed.png" />
+    <Content Include="Assets\images\garagedoor-open.png" />
+    <Content Include="Assets\images\garagedoor.png" />
+    <Content Include="Assets\images\garden.png" />
+    <Content Include="Assets\images\garden2.png" />
+    <Content Include="Assets\images\garden3.png" />
+    <Content Include="Assets\images\grass.png" />
+    <Content Include="Assets\images\groundfloor.png" />
+    <Content Include="Assets\images\heating-0.png" />
+    <Content Include="Assets\images\heating-100.png" />
+    <Content Include="Assets\images\heating-20.png" />
+    <Content Include="Assets\images\heating-40.png" />
+    <Content Include="Assets\images\heating-60.png" />
+    <Content Include="Assets\images\heating-80.png" />
+    <Content Include="Assets\images\heating-off.png" />
+    <Content Include="Assets\images\heating-on.png" />
+    <Content Include="Assets\images\heating.png" />
+    <Content Include="Assets\images\house-off.png" />
+    <Content Include="Assets\images\house.png" />
+    <Content Include="Assets\images\icon.png" />
+    <Content Include="Assets\images\icon16x16.png" />
+    <Content Include="Assets\images\icon64x64.png" />
+    <Content Include="Assets\images\keyring.png" />
+    <Content Include="Assets\images\kitchen.png" />
+    <Content Include="Assets\images\LICENSE.txt" />
+    <Content Include="Assets\images\light-off.png" />
+    <Content Include="Assets\images\light-on.png" />
+    <Content Include="Assets\images\lock-closed.png" />
+    <Content Include="Assets\images\lock-open.png" />
+    <Content Include="Assets\images\lock.png" />
+    <Content Include="Assets\images\moon.png" />
+    <Content Include="Assets\images\network-off.png" />
+    <Content Include="Assets\images\network-on.png" />
+    <Content Include="Assets\images\network.png" />
+    <Content Include="Assets\images\none.png" />
+    <Content Include="Assets\images\office.png" />
+    <Content Include="Assets\images\outdoorlight.png" />
+    <Content Include="Assets\images\parents-off.png" />
+    <Content Include="Assets\images\parents.png" />
+    <Content Include="Assets\images\pie.png" />
+    <Content Include="Assets\images\present-off.png" />
+    <Content Include="Assets\images\present.png" />
+    <Content Include="Assets\images\rollershutter-0.png" />
+    <Content Include="Assets\images\rollershutter-10.png" />
+    <Content Include="Assets\images\rollershutter-100.png" />
+    <Content Include="Assets\images\rollershutter-20.png" />
+    <Content Include="Assets\images\rollershutter-30.png" />
+    <Content Include="Assets\images\rollershutter-40.png" />
+    <Content Include="Assets\images\rollershutter-50.png" />
+    <Content Include="Assets\images\rollershutter-60.png" />
+    <Content Include="Assets\images\rollershutter-70.png" />
+    <Content Include="Assets\images\rollershutter-80.png" />
+    <Content Include="Assets\images\rollershutter-90.png" />
+    <Content Include="Assets\images\rollershutter.png" />
+    <Content Include="Assets\images\settings.png" />
+    <Content Include="Assets\images\sewerage-0.png" />
+    <Content Include="Assets\images\sewerage-10.png" />
+    <Content Include="Assets\images\sewerage-100.png" />
+    <Content Include="Assets\images\sewerage-20.png" />
+    <Content Include="Assets\images\sewerage-30.png" />
+    <Content Include="Assets\images\sewerage-40.png" />
+    <Content Include="Assets\images\sewerage-50.png" />
+    <Content Include="Assets\images\sewerage-60.png" />
+    <Content Include="Assets\images\sewerage-70.png" />
+    <Content Include="Assets\images\sewerage-80.png" />
+    <Content Include="Assets\images\sewerage-90.png" />
+    <Content Include="Assets\images\sewerage.png" />
+    <Content Include="Assets\images\shield-0.png" />
+    <Content Include="Assets\images\shield-1.png" />
+    <Content Include="Assets\images\shield-2.png" />
+    <Content Include="Assets\images\shield.png" />
+    <Content Include="Assets\images\siren-on.png" />
+    <Content Include="Assets\images\siren.png" />
+    <Content Include="Assets\images\slider-0.png" />
+    <Content Include="Assets\images\slider-10.png" />
+    <Content Include="Assets\images\slider-100.png" />
+    <Content Include="Assets\images\slider-20.png" />
+    <Content Include="Assets\images\slider-30.png" />
+    <Content Include="Assets\images\slider-40.png" />
+    <Content Include="Assets\images\slider-50.png" />
+    <Content Include="Assets\images\slider-60.png" />
+    <Content Include="Assets\images\slider-70.png" />
+    <Content Include="Assets\images\slider-80.png" />
+    <Content Include="Assets\images\slider-90.png" />
+    <Content Include="Assets\images\slider.png" />
+    <Content Include="Assets\images\smiley.png" />
+    <Content Include="Assets\images\socket-off.png" />
+    <Content Include="Assets\images\socket-on.png" />
+    <Content Include="Assets\images\socket.png" />
+    <Content Include="Assets\images\sofa.png" />
+    <Content Include="Assets\images\splash-ipad-h.png" />
+    <Content Include="Assets\images\splash-ipad-v.png" />
+    <Content Include="Assets\images\splash-iphone.png" />
+    <Content Include="Assets\images\splash-iphone4.png" />
+    <Content Include="Assets\images\sun.png" />
+    <Content Include="Assets\images\sun_clouds.png" />
+    <Content Include="Assets\images\switch-off.png" />
+    <Content Include="Assets\images\switch-on.png" />
+    <Content Include="Assets\images\switch.png" />
+    <Content Include="Assets\images\temperature.png" />
+    <Content Include="Assets\images\terrace.png" />
+    <Content Include="Assets\images\video.png" />
+    <Content Include="Assets\images\wardrobe.png" />
+    <Content Include="Assets\images\wardrobe2.png" />
+    <Content Include="Assets\images\wind.png" />
+    <Content Include="Assets\images\_0.png" />
+    <Content Include="Assets\images\_1.png" />
+    <Content Include="Assets\images\_down.png" />
+    <Content Include="Assets\images\_stop.png" />
+    <Content Include="Assets\images\_up.png" />
+    <Content Include="Assets\Logo.scale-100.png" />
+    <Content Include="Assets\SmallLogo.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="BugReporter\ReportABugManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ColorDialog\ColorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FirstStart\ConfigureFirstStart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Gui\MainNav.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SettingsManager\AdvancedSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsManager\SecuritySettingsFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsManager\WinHABSettingsFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
+    <VisualStudioVersion>12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

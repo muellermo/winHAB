@@ -1,0 +1,20 @@
+﻿<Page
+    x:Class="winHAB.ColorDialog.ColorDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:winHAB.ColorDialog"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Canvas x:Name="colorDialogCanvas" HorizontalAlignment="Left" Height="403" Margin="707,301,0,0" VerticalAlignment="Top" Width="520" PointerMoved="colorDialogCanvas_PointerMoved"/>
+        <AppBarButton x:Name="backButton" HorizontalAlignment="Left" Label="Backward" Margin="25,21,0,0" VerticalAlignment="Top" Tapped="backButton_Tapped">
+            <AppBarButton.Icon>
+                <SymbolIcon/>
+            </AppBarButton.Icon>
+        </AppBarButton>
+        <Image x:Name="colorWheel" HorizontalAlignment="Left" Height="344" Margin="151,186,0,0" VerticalAlignment="Top" Width="278" Source="../Assets/images/colorwheel.png" PointerMoved="Image_PointerMoved"/>
+
+    </Grid>
+</Page>
