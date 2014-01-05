@@ -8,3 +8,6 @@ Currently Bugs
   - The UI gets only on update at runtime. After DataStruct changed, PropertyListener don't recognizes changes.
   - Sourcefiles can be found in src, this folder doesn't include the images
   - Full-Projekt, with images can be found in Visual Studio Project
+
+
+New Version with minor bugfixes is coming at 06.01.2013
