@@ -63,6 +63,7 @@ namespace winHAB
             this.InitializeComponent();
 
             this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
+
             if (localSettings.Values["connectionType"] != null && localSettings.Values["connectionType"].ToString().Equals(ConnectionTypesEnum.HTTPSwithUsernameAndPassword.ToString()))
             {
                 try
@@ -123,36 +124,36 @@ namespace winHAB
             /*
              * After the settings set correctly, the DispatcherTimer can start the work
              */
-            if (settingsSetCorrectly)
+            //if (settingsSetCorrectly)
+            //{
+            /*
+             * Sets the Timer, to call the JSON-Parser periodicly
+             */
+            if (localSettings.Values["refreshTime"] != null)
             {
-                /*
-                 * Sets the Timer, to call the JSON-Parser periodicly
-                 */
-                if (localSettings.Values["refreshTime"] != null)
+                periodicTimer = ThreadPoolTimer.CreatePeriodicTimer((x) =>
                 {
-                    periodicTimer = ThreadPoolTimer.CreatePeriodicTimer((x) =>
+                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                     {
-                        Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                        {
-                            //Use this function to access the GUI, from another Thread
-                        });
-                        //parser.start();//OLD-FUNCTION
-                        jsonDownloader.connectAndLoad();
-                    }, TimeSpan.FromSeconds(Convert.ToInt32(localSettings.Values["refreshTime"])));
-                }
-                else
-                {
-                    periodicTimer = ThreadPoolTimer.CreatePeriodicTimer((x) =>
-                    {
-                        Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                        {
-                            //Use this function to access the GUI, from another Thread
-                        });
-                        //parser.start();
-                        jsonDownloader.connectAndLoad();
-                    }, TimeSpan.FromSeconds(5));
-                }
+                        //Use this function to access the GUI, from another Thread
+                    });
+                    //parser.start();//OLD-FUNCTION
+                    jsonDownloader.connectAndLoad();
+                }, TimeSpan.FromSeconds(Convert.ToInt32(localSettings.Values["refreshTime"])));
             }
+            else
+            {
+                periodicTimer = ThreadPoolTimer.CreatePeriodicTimer((x) =>
+                {
+                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                    {
+                        //Use this function to access the GUI, from another Thread
+                    });
+                    //parser.start();
+                    jsonDownloader.connectAndLoad();
+                }, TimeSpan.FromSeconds(5));
+            }
+            //}
             /*
              * DispatcherTimer to keep the Clock alive
              * */

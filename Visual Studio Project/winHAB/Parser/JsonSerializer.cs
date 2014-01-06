@@ -22,7 +22,7 @@ using winHAB.Parser;
 
 namespace JSON_Parser.Parser
 {
-    public class JSONParser
+    public class JsonSerializer
     {
         #region Variablen
         private Windows.Web.Http.HttpClient httpClient;
@@ -39,7 +39,7 @@ namespace JSON_Parser.Parser
         public String json { get; set; }
         public DataRecycler dataRecycler { get; set; }
         public JsonOpenHABDataContract sh_jsonresult { get; set; }
-        public static JSONParser instance { get; set; }
+        public static JsonSerializer instance { get; set; }
         public LinkedList<Widget> widgetList { get; set; }
         public ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         #endregion
@@ -160,7 +160,7 @@ namespace JSON_Parser.Parser
         }
         #endregion
 
-        public JSONParser()
+        public JsonSerializer()
         {
 
         }
@@ -193,13 +193,13 @@ namespace JSON_Parser.Parser
             //readx();
             return sh_jsonresult;
         }
-        public async void readx()
-        {
-            FileOpenPicker fileOpenPicker = new FileOpenPicker();
-            fileOpenPicker.FileTypeFilter.Add(".xml");
-            StorageFile storageFile = await fileOpenPicker.PickSingleFileAsync();
-            Stream streama = await storageFile.OpenStreamForReadAsync();
-            XmlReader reader = XmlReader.Create(streama);
-        }
+        //public async void readx()
+        //{
+        //    FileOpenPicker fileOpenPicker = new FileOpenPicker();
+        //    fileOpenPicker.FileTypeFilter.Add(".xml");
+        //    StorageFile storageFile = await fileOpenPicker.PickSingleFileAsync();
+        //    Stream streama = await storageFile.OpenStreamForReadAsync();
+        //    XmlReader reader = XmlReader.Create(streama);
+        //}
     }
 }

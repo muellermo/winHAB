@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace winHAB.communication
         private HttpBaseProtocolFilter filter;
         private UriBuilder uriToOpenHAB { get; set; }
         private HttpResponseMessage httpResponseMessage { get; set; }
-        private JSONParser parser = new JSONParser();
+        private JsonSerializer parser = new JsonSerializer();
         private Boolean _toastOnce = false;
         #endregion
         #region Constructors
@@ -106,6 +107,7 @@ namespace winHAB.communication
                 filter.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.Expired);
                 filter.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.InvalidName);
                 filter.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.IncompleteChain);
+
                 /**
                  * Establish HttpClient
                  * */
@@ -186,19 +188,37 @@ namespace winHAB.communication
             //Unsafe Operation, when the 
 
             //httpResponseMessage = await httpClient.GetStringAsync(uriToOpenHAB.Uri);//.GetAsync(uriToOpenHAB.Uri);
-            if (filter != null)
-            {
-                
-                httpClient = new HttpClient(this.filter); if (httpResponseMessage != null)
-                    tmpjson = httpResponseMessage.Content.ToString();
-            }
-            else
-            {
-                httpClient = new HttpClient(); if (httpResponseMessage != null)
-                    tmpjson = httpResponseMessage.Content.ToString();
-            }
-            httpResponseMessage = await httpClient.GetAsync(uriToOpenHAB.Uri); //httpResponseMessage.Content.ToString();
-            String json = httpResponseMessage.Content.ToString();
+            //httpClient = null;
+            //if (filter != null)
+            //{
+
+            //    httpClient = new HttpClient(this.filter);
+            //    if (httpResponseMessage != null)
+            //    {
+            //        tmpjson = httpResponseMessage.Content.ToString();
+            //    }
+            //    httpResponseMessage = null;
+            //}
+            //else
+            //{
+            //    httpClient = new HttpClient();
+            //    if (httpResponseMessage != null)
+            //    {
+            //        
+            //    }
+            //    httpResponseMessage = null;
+            //}
+            //tmpjson = httpResponseMessage.Content.ToString();
+            Windows.Web.Http.Headers.HttpNameValueHeaderValue cacheControl = new Windows.Web.Http.Headers.HttpNameValueHeaderValue("Cache-Control", "must-revalidate");
+            
+            httpClient.DefaultRequestHeaders.CacheControl.Add(cacheControl);
+            httpResponseMessage = await httpClient.GetAsync(uriToOpenHAB.Uri, HttpCompletionOption.ResponseContentRead); //httpResponseMessage.Content.ToString();
+            //httpResponseMessage.Source = HttpResponseMessageSource.Network;
+            String json = await httpResponseMessage.Content.ReadAsStringAsync();
+
+            System.Diagnostics.Debug.WriteLine(httpResponseMessage.Headers);
+            System.Diagnostics.Debug.WriteLine(httpResponseMessage.StatusCode);
+            System.Diagnostics.Debug.WriteLine(httpResponseMessage.Content.Headers.ContentLength);
             //if(json.Contains("\"widget\":{"))
             //{
             //    int index = json.IndexOf("\"widget\":{");
@@ -206,12 +226,15 @@ namespace winHAB.communication
             //    json.Insert(index, "[");
             //    ;
             //}
-            //StorageFolder storageFolder = KnownFolders.DocumentsLibrary;
-            //Random rnd = new Random();
-            //String fileName =Convert.ToString(rnd.Next())+".txt";
-            //StorageFile storageFile = await storageFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            StorageFolder storageFolder = KnownFolders.VideosLibrary;
+            Random rnd = new Random();
+            String fileName = Convert.ToString(rnd.Next()) + ".txt";
+            StorageFile storageFile = await storageFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            //MemoryStream memoryStream = new MemoryStream(UTF8Encoding.Convert(json));
+            Stream fileStream = await storageFile.OpenStreamForWriteAsync();
+            fileStream.Write(UTF8Encoding.UTF8.GetBytes(json), 0, UTF8Encoding.UTF8.GetBytes(json).Length);
             if (!tmpjson.Equals(json))
-                System.Diagnostics.Debug.WriteLine("");
+                System.Diagnostics.Debug.WriteLine("Ungleich");
             //httpClient.Dispose();
             sh_downloadFinished(parser.parse(json));
             //}
