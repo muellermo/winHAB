@@ -12,7 +12,7 @@ Resolved Bugs
   - The UI gets only on update at runtime. HttpClient-Cachemode was enabled.
 
 Folderdescription
-  - Sourcefiles can be found in src, this folder doesn't include the images
+  - Sourcefiles can be found in src, this folder doesn't include the images (NEWEST-VERSION)
   - Full-Projekt, with images can be found in Visual Studio Project (OLD-VERSION)
 
 
