@@ -79,5 +79,17 @@ namespace winHAB.openHAB_definition.openHAB_Widgets
                     new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        public bool guiState
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

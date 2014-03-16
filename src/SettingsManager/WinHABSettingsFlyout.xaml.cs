@@ -16,6 +16,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using winHAB.communication;
+using winHAB.communication.connectiontypes;
+using winHAB.communication.imageCacheControlManager;
 
 // Die Elementvorlage "Einstellungs-Flyout" ist unter http://go.microsoft.com/fwlink/?LinkId=273769 dokumentiert.
 
@@ -29,7 +31,8 @@ namespace winHAB.SettingsManager
         public WinHABSettingsFlyout()
         {
             this.InitializeComponent();
-            
+            imageCachePrgrsbr.Minimum = 0;
+            imageCachePrgrsbr.Maximum = 100;
             expertGrid.Visibility = Visibility.Collapsed;
             if (localSettings.Values["username"] != null)
             {
@@ -151,7 +154,7 @@ namespace winHAB.SettingsManager
                 {
                     settings.sh_port = Convert.ToInt32(portTextBox.Text);
                 }
-                if (refreshTrackBar.Value != 5)
+                if (refreshTrackBar.Value != 1)
                 {
                     settings.refresh_time = Convert.ToInt32(refreshTrackBar.Value);
                 }
@@ -169,7 +172,23 @@ namespace winHAB.SettingsManager
         private void generateURIButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             ComboBoxItem x = protocollChooser.SelectedItem as ComboBoxItem;
-            urlTextBox.Text = x.Content.ToString() + "://" + urlTextBox1.Text +":"+ portTextBox.Text.ToString() + "/rest/sitemaps/" + sitemapTextBox.Text + "?type=json";
+            urlTextBox.Text = x.Content.ToString() + "://" + urlTextBox1.Text + ":" + portTextBox.Text.ToString() + "/rest/sitemaps/" + sitemapTextBox.Text + "?type=json";
+        }
+
+        private void demoCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+            urlTextBox.Text = "http://demo.openhab.org:8080/rest/sitemaps/demo?type=json";
+        }
+
+        private void demoCheckbox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            urlTextBox.Text = "";
+        }
+
+        private void refreshImageCacheBtn_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ImageCacheManager imageCacheManager;
+            imageCachePrgrsbr.Value = 100;
         }
     }
 }

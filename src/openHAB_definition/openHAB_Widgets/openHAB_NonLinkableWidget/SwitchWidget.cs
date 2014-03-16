@@ -9,7 +9,7 @@ using winHAB.Interfaces;
 
 namespace winHAB.openHAB_definition.openHAB_Widgets.openHAB_NonLinkableWidget
 {
-    class SwitchWidget : AbstractWidget, INotifyPropertyChanged
+    class SwitchWidget : AbstractWidget, INotifyPropertyChanged, IAbstractWidget
     {
         private Boolean _guiState { get; set; }
         public Boolean guiState
@@ -54,6 +54,14 @@ namespace winHAB.openHAB_definition.openHAB_Widgets.openHAB_NonLinkableWidget
             this.linkedPage = widget.linkedPage;
             this.item = widget.item;
             this._once = true;
+            base.widgetId = widget.widgetId;
+            base.type = widget.type;
+            base.label = widget.label;
+            base.icon = widget.icon;
+            base.widget = widget.widget;
+            base.linkedPage = widget.linkedPage;
+            base.item = widget.item;
+            base._once = true;
         }
         private String _widgetId { get; set; }
 

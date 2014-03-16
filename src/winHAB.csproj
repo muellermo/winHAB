@@ -120,9 +120,13 @@
     <Compile Include="ColorDialog\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="communication\ConnectionTypesEnum.cs" />
-    <Compile Include="communication\GetJSON.cs" />
-    <Compile Include="communication\PostMessage.cs" />
+    <Compile Include="ColorDialog\ColorDialogFlyout.xaml.cs">
+      <DependentUpon>ColorDialogFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="communication\connectiontypes\ConnectionTypesEnum.cs" />
+    <Compile Include="communication\httpclient\get\GetJson.cs" />
+    <Compile Include="communication\imageCacheControlManager\ImageCacheManager.cs" />
+    <Compile Include="communication\httpclient\post\PostMessage.cs" />
     <Compile Include="ErrorManager\ErrorManager.cs" />
     <Compile Include="FirstStart\ConfigureFirstStart.xaml.cs">
       <DependentUpon>ConfigureFirstStart.xaml</DependentUpon>
@@ -131,6 +135,7 @@
     <Compile Include="Gui\MainNav.xaml.cs">
       <DependentUpon>MainNav.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IMainPage.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -152,6 +157,7 @@
     <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\ChartWidget.cs" />
     <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\ColorWidget.cs" />
     <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\ContactWidget.cs" />
+    <Compile Include="Interfaces\ISwitchWidget.cs" />
     <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\ListWidget.cs" />
     <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\NumberWidget.cs" />
     <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\SelectionWidget.cs" />
@@ -161,6 +167,7 @@
     <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\VideoWidget.cs" />
     <Compile Include="openHAB_definition\openHAB_Widgets\openHAB_NonLinkableWidget\WebViewWidget.cs" />
     <Compile Include="Parser\DataRecycler.cs" />
+    <Compile Include="Parser\JsonRefractor.cs" />
     <Compile Include="Parser\JsonSerializer.cs" />
     <Compile Include="Parser\JsonOpenHABDataContract.cs" />
     <Compile Include="Parser\XMLOpenHABDataContract.cs" />
@@ -175,8 +182,8 @@
     <Compile Include="SettingsManager\WinHABSettingsFlyout.xaml.cs">
       <DependentUpon>WinHABSettingsFlyout.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TemplateSelectoren\ItemTemplateSelector.cs" />
-    <Compile Include="TemplateSelectoren\MainTemplateSelector.cs" />
+    <Compile Include="TemplateSelectoren\MainNavItemTemplateSelector.cs" />
+    <Compile Include="TemplateSelectoren\LeftNavItemTemplateSelector.cs" />
     <Compile Include="WidgetManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -367,6 +374,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ColorDialog\ColorDialogFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FirstStart\ConfigureFirstStart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -391,6 +402,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

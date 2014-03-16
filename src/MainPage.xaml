@@ -26,7 +26,21 @@
                 </Grid>
             </Border>
         </DataTemplate>
-        
+        <DataTemplate x:Key="colorPickerWidget">
+            <Border BorderBrush="SlateGray" BorderThickness="0,1,0,0">
+                <Grid Height="60">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="700"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" Height="40"/>
+                    <TextBlock Grid.Column="1" Foreground="Black" Text="{Binding label}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                    <!--<ToggleSwitch Grid.Column="2" x:Name="switchWidgetBtn" HorizontalAlignment="Right" IsOn="{Binding guiState}" Tag="{Binding item}"  Foreground="White" Toggled="ToggleSwitch_Toggled" Background="#FFD85700"/>-->
+                    <Button Tag="{Binding item}" Grid.Column="2" x:Name="colorPickerButton" Tapped="colorPickerButton_Tapped" Width="auto" Height="auto" Background="#FF6A6A6A" Content="Colordialog"></Button>
+                </Grid>
+            </Border>
+        </DataTemplate>
         <DataTemplate x:Key="videoWidget">
             <Border BorderBrush="SlateGray" BorderThickness="0,1,0,0">
                 <!--Background="SlateGray" CornerRadius="5" -->
@@ -37,7 +51,8 @@
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" Height="40"/>
-                    <MediaElement Grid.Column="1" Tag="{Binding item}" Source="{Binding url}" AutoPlay="True" Height="640" Width="480" HorizontalAlignment="Left" VerticalAlignment="Center"></MediaElement>
+                    <MediaElement AreTransportControlsEnabled="True" Grid.Column="1" Tag="{Binding item}" Source="{Binding url}" AutoPlay="True" Height="640" Width="480" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    </MediaElement>
                     <!--<TextBlock Grid.Column="1" Foreground="Black" Text="{Binding label}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>-->
                     <TextBlock Grid.Column="2" Foreground="Black" Text="{Binding label}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
@@ -116,28 +131,31 @@
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" Height="40" ></Image>
                     <TextBlock Grid.Column="1" Foreground="Black" Margin="20,0,0,0" Text="{Binding label}" HorizontalAlignment="Left"  VerticalAlignment="Center"></TextBlock>
-                    <ToggleButton Grid.Column="2" Width="60" x:Name="roller" HorizontalAlignment="Center" VerticalAlignment="Center"></ToggleButton> 
+                    <ToggleButton Grid.Column="2" Width="60" x:Name="roller" HorizontalAlignment="Center" VerticalAlignment="Center"></ToggleButton>
                     <Slider Grid.Column="3" Minimum="0" Maximum="100" x:Name="sliderWidgetsldr" HorizontalAlignment="Right" Tag="{Binding item}" Foreground="White" Background="#FFD85700" Width="180" Value="{Binding item.state}" ValueChanged="sliderWidgetsldr_ValueChanged"></Slider>
                 </Grid>
             </Border>
         </DataTemplate>
 
         <DataTemplate x:Key="frameWidget">
-            <Border BorderBrush="SlateGray" BorderThickness="0,1,0,0">
-                <Grid Height="60">
+            <Border BorderBrush="SlateGray" BorderThickness="0,1,0,0" Background="#FFCFCCCC">
+                <Grid Height="40">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="400"/>
-                        <!--<ColumnDefinition Width="50"/>-->
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
-                    <!--<Image Grid.Column="0" Source="{Binding childPath}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" Height="40" ></Image>-->
-                    <TextBlock Grid.Column="1" Foreground="Black" Margin="20,0,0,0" Text="{Binding label}" HorizontalAlignment="Left"  VerticalAlignment="Center" FontWeight="Bold"></TextBlock>
-                    <!--<Image Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="32" Height="32" Source="{Binding childPath}"></Image>-->
+
+                    <Image Grid.Column="0" Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" Height="40" ></Image>
+                    <TextBlock Grid.Column="1" Foreground="Black" Margin="20,0,0,0" Text="{Binding label}" HorizontalAlignment="Left"  VerticalAlignment="Center" FontWeight="Bold" FontSize="14"></TextBlock>
+                    <!--<TextBlock Grid.Column="2" Foreground="Black" Margin="20,0,0,0" Text="Unsupported Widget" HorizontalAlignment="Left"  VerticalAlignment="Center" FontWeight="Bold" FontSize="14"></TextBlock>-->
+                    <TextBlock Grid.Column="3" Foreground="Black" Margin="20,0,0,0" Text="{Binding type}" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="14"></TextBlock>
                 </Grid>
             </Border>
         </DataTemplate>
 
-        <DataTemplate x:Key="itemTemplate">
+        <!--<DataTemplate x:Key="itemTemplate">
             <Grid Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
@@ -146,63 +164,52 @@
                 <TextBlock Foreground="Black" Grid.Column="1" Text="{Binding name}" HorizontalAlignment="Left"></TextBlock>
             </Grid>
         </DataTemplate>
+-->
 
-        <S:MainTemplateSelector x:Key="MainTemplateSelector" 
+        <DataTemplate x:Key="unsupportedWidget">
+            <Border BorderBrush="SlateGray" BorderThickness="0,1,0,0" Background="#FFF9F2A8">
+                <Grid Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="450"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Grid.Column="0" Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" Height="40" ></Image>
+                    <TextBlock Grid.Column="1" Foreground="Black" Margin="20,0,0,0" Text="{Binding label}" HorizontalAlignment="Left"  VerticalAlignment="Center" FontWeight="Bold" FontSize="14"></TextBlock>
+                    <TextBlock Grid.Column="2" Foreground="Black" Margin="20,0,0,0" Text="Unsupported Widget" HorizontalAlignment="Left"  VerticalAlignment="Center" FontWeight="Bold" FontSize="14"></TextBlock>
+                    <TextBlock Grid.Column="3" Foreground="Black" Margin="20,0,0,0" Text="{Binding type}" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="14"></TextBlock>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <S:LeftNavItemTemplateSelector x:Key="LeftNavItemTemplateSelector" 
                                 groupWidget="{StaticResource groupWidget}" 
                                 frameWidget="{StaticResource frameWidget}"
                                 textWidget="{StaticResource textWidget}"
-                                sliderWidget="{StaticResource sliderWidget}">
-                                
-        </S:MainTemplateSelector>
+                                sliderWidget="{StaticResource sliderWidget}"
+                                unsupportedWidget="{StaticResource unsupportedWidget}">
 
-        <S:ItemTemplateSelector x:Key="ItemTemplateSelector" 
+        </S:LeftNavItemTemplateSelector>
+
+        <S:MainNavItemTemplateSelector x:Key="MainNavItemTemplateSelector" 
                                 switchWidget="{StaticResource switchWidget}" 
                                 textWidget="{StaticResource textWidget}"
                                 sliderWidget="{StaticResource sliderWidget}"
                                 videoWidget="{StaticResource videoWidget}"
                                 webViewWidget="{StaticResource webViewWidget}"
-                                numberWidget="{StaticResource numberWidget}">
-            
+                                numberWidget="{StaticResource numberWidget}"
+                                unsupportedWidget="{StaticResource unsupportedWidget}"
+                                       frameWidget="{StaticResource frameWidget}"
+                                       colorPickerWidget="{StaticResource colorPickerWidget}">
 
-        </S:ItemTemplateSelector>
 
-            
+        </S:MainNavItemTemplateSelector>
 
-        <!--<localSelector:ListGroupStyleSelector x:Key="listGroupStyleSelector"/>-->
-        <!--<ResourceDictionary>
-            <DataTemplate x:Key="listViewItemTemplate">
-                <StackPanel Width="320" Margin="10">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding label}" FontWeight="Bold" Style="{StaticResource BaseTextBlockStyle}"
-                       Margin="2,0,0,0"/>
-                        <TextBlock Text="{Binding DueDate}" Style="{StaticResource BodyTextBlockStyle}" TextWrapping="NoWrap"
-                       Margin="20,0,0,0"/>
-                    </StackPanel>
-                    <CheckBox Content="Complete" IsChecked="{Binding Complete}" IsEnabled="False"/>
-                </StackPanel>
-            </DataTemplate>
 
-            <GroupStyle x:Key="listViewGroupStyle">
-                <GroupStyle.HeaderTemplate>
-                    <DataTemplate>
-                        <Grid Background="LightGray"  >
-                            <TextBlock Text='{Binding Key}' Foreground="Black" Margin="10"
-                           Style="{StaticResource SubheaderTextBlockStyle}" />
-                        </Grid>
-                    </DataTemplate>
-                </GroupStyle.HeaderTemplate>
-
-                <GroupStyle.Panel>
-                    <ItemsPanelTemplate>
-                        <VariableSizedWrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </GroupStyle.Panel>
-            </GroupStyle>
-        </ResourceDictionary>-->
         <CollectionViewSource x:Name="Frames" IsSourceGrouped="True" ItemsPath="widget">
         </CollectionViewSource>
-        <!--<localSelector:ListGroupStyleSelector x:Key="listGroupStyleSelector"/>-->
-        <GroupStyle x:Key="listViewGroupStyle">
+      <!--  <GroupStyle x:Key="listViewGroupStyle">
             <GroupStyle.HeaderTemplate>
                 <DataTemplate>
                     <Grid Background="LightGray"  >
@@ -217,65 +224,29 @@
                     <VariableSizedWrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </GroupStyle.Panel>
-        </GroupStyle>
+        </GroupStyle>-->
     </Page.Resources>
     <Grid Background="#FF464646" >
-        <ListView ItemsSource="{Binding Source={StaticResource Frames}}" ItemTemplateSelector="{StaticResource MainTemplateSelector}" BorderBrush="Black" SelectionChanged="leftNav_SelectionChanged" x:Name="leftNav" Background="#FFE6E6E6" HorizontalAlignment="Left" Height="688" Margin="0,80,0,0" VerticalAlignment="Top" Width="308">
-            <!--<ListView.GroupStyle>
-                <GroupStyle HidesIfEmpty="False">
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <Grid Background="LightGray" Margin="0">
-                                <TextBlock Text='{Binding label}' 
-                                   Foreground="Black" Margin="30"
-                                   Style="{StaticResource HeaderTextBlockStyle}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="GroupItem">
-                            <Setter Property="MinWidth" Value="600"/>
-                            <Setter Property="BorderBrush" Value="DarkGray"/>
-                            <Setter Property="BorderThickness" Value="2"/>
-                            <Setter Property="Margin" Value="3,0"/>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-
-                    <GroupStyle.Panel>
-                        <ItemsPanelTemplate>
-                            <VariableSizedWrapGrid/>
-                        </ItemsPanelTemplate>
-                    </GroupStyle.Panel>
-                </GroupStyle>
-            </ListView.GroupStyle>
-            --><!--<ListView.GroupStyle>
-                <GroupStyle x:Name="listViewGroupStyle">
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding label}" Foreground="Black"></TextBlock>
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </ListView.GroupStyle>-->
+        <ListView  ItemsSource="{Binding Source={StaticResource Frames}}"   ItemTemplateSelector="{StaticResource LeftNavItemTemplateSelector}" BorderBrush="Black" SelectionChanged="leftNav_SelectionChanged" x:Name="leftNav" Background="#FFE6E6E6" HorizontalAlignment="Left" Height="688" Margin="0,80,0,0" Width="308" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
         </ListView>
-        <ListView ItemTemplateSelector="{StaticResource ItemTemplateSelector}"  SelectionMode="None" BorderBrush="Transparent" SelectionChanged="mainNav_SelectionChanged"  x:Name="mainNav" Background="#FFE6E6E6" HorizontalAlignment="Left" Height="688" Margin="313,80,-10,0" VerticalAlignment="Top" Width="1063"/>
-        <TextBlock HorizontalAlignment="Left" Margin="402,14,0,0" TextWrapping="Wrap" Text="winHab" VerticalAlignment="Top" Height="41" Width="136" FontSize="36"/>
+        <ListView ItemTemplateSelector="{StaticResource MainNavItemTemplateSelector}"  SelectionMode="None" BorderBrush="Transparent" SelectionChanged="mainNav_SelectionChanged"  x:Name="mainNav" Background="#FFE6E6E6" HorizontalAlignment="Left" Height="688"  Margin="313,80,0,0" VerticalAlignment="Top" Width="1053"/>
+        <TextBlock HorizontalAlignment="Left" Margin="402,14,0,0" TextWrapping="Wrap" Text="winHAB" VerticalAlignment="Top" Height="41" Width="136" FontSize="36"/>
         <ProgressBar  IsIndeterminate="True" Height="10" VerticalAlignment="Top" Margin="0,0,1058,0" Foreground="#FFD85700"/>
         <CommandBar Height="100" VerticalAlignment="Bottom" Background="#FF464646">
             <AppBarButton HorizontalAlignment="Center" Tapped="OpenSettingsFlyout_Tapped" Label="Settings" Margin="176,0,0,0" VerticalAlignment="Top" Icon="Setting"/>
-            <AppBarButton HorizontalAlignment="Center" Label="pause refresh" Margin="176,0,0,0" VerticalAlignment="Top" Icon="Pause"/>
+            <!--<AppBarButton HorizontalAlignment="Center" Label="pause refresh" Margin="176,0,0,0" VerticalAlignment="Top" Icon="Pause"/>-->
         </CommandBar>
         <Image HorizontalAlignment="Left" Height="41" Margin="344,15,0,0" VerticalAlignment="Top" Width="53" Source="Assets/images/icon.png"/>
         <TextBlock x:Name="clockDayDate" HorizontalAlignment="Left" Margin="1253,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="103" Text="Day"/>
         <TextBlock x:Name="clockTime" HorizontalAlignment="Left" Margin="1253,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Time"/>
         <AppBarButton x:Name="backButton" HorizontalAlignment="Left" Label="Back" Margin="-6,1,0,0" VerticalAlignment="Top" Icon="Back" Tapped="backButton_Tapped"/>
-        <AppBarButton x:Name="forwardButton" HorizontalAlignment="Left" Label="Forward" Margin="109,0,0,0" VerticalAlignment="Top" Icon="Forward" Tapped="forwardButton_Tapped"/>
+        <AppBarButton x:Name="forwardButton" Visibility="Collapsed" HorizontalAlignment="Left" Label="Forward" Margin="109,0,0,0" VerticalAlignment="Top" Icon="Forward" Tapped="forwardButton_Tapped"/>
         <AppBarButton x:Name="refreshButton" HorizontalAlignment="Left" Label="Refresh" Margin="214,1,0,0" VerticalAlignment="Top" ClickMode="Press" Icon="Refresh" Tapped="refreshButton_Tapped"/>
-        <AppBarButton x:Name="colorDialogButton" HorizontalAlignment="Left" Label="Colordialog Test" Margin="554,-4,0,0" VerticalAlignment="Top" Tapped="colorDialogButton_Tapped">
+        <AppBarButton x:Name="colorDialogButton" Visibility="Collapsed" HorizontalAlignment="Left" Label="Colordialog Test" Margin="554,-4,0,0" VerticalAlignment="Top" Tapped="colorDialogButton_Tapped">
             <AppBarButton.Icon>
                 <SymbolIcon/>
             </AppBarButton.Icon>
         </AppBarButton>
+        <TextBlock x:Name="taskObserver" HorizontalAlignment="Left" Margin="1219,62,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="137"/>
     </Grid>
 </Page>

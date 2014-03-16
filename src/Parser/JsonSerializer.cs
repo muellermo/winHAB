@@ -167,31 +167,44 @@ namespace JSON_Parser.Parser
 
         public void parseStart(String json)
         {
-            parse(json);
+            if (json != "")
+                parse(json);
         }
         public JsonOpenHABDataContract parse(String json)
         {
-            //XMLOpenHABDataContract sh_jsonresult1;
-            //json = json.Replace("\\\\", "\\");;//.Replace("\\\\", "\\").Replace("\\\"", "\"");
-            //JsonOpenHABDataContract.widgets.Clear();
-            MemoryStream stream = new MemoryStream(UTF8Encoding.UTF8.GetBytes(json));
-            stream.Position = 0;
-            //XmlSerializer x = new XmlSerializer(typeof(XMLOpenHABDataContract));
-            //try
+            //if (json != "")
             //{
-            //    sh_jsonresult1 = (XMLOpenHABDataContract)x.Deserialize(stream);
+                //XMLOpenHABDataContract sh_jsonresult1;
+                //json = json.Replace("\\\\", "\\");;//.Replace("\\\\", "\\").Replace("\\\"", "\"");
+                //JsonOpenHABDataContract.widgets.Clear();
+                //JsonRefractor jsonRefractor = new JsonRefractor(json);
+                //jsonRefractor.find();
+                MemoryStream stream = new MemoryStream(UTF8Encoding.UTF8.GetBytes(json));
+                stream.Position = 0;
+                //XmlSerializer x = new XmlSerializer(typeof(XMLOpenHABDataContract));
+                //try
+                //{
+                //    sh_jsonresult1 = (XMLOpenHABDataContract)x.Deserialize(stream);
+                //}
+                //catch (Exception ex)
+                //{
+                //    int i = 0;
+                //}
+                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
+                settings.UseSimpleDictionaryFormat = true;
+                DataContractJsonSerializer jsonSerielizer = new DataContractJsonSerializer(typeof(JsonOpenHABDataContract), settings);
+                ////jsonSerielizer.WriteObject(stream, sh_jsonresult);
+                try
+                {
+                    sh_jsonresult = (JsonOpenHABDataContract)jsonSerielizer.ReadObject(stream);
+                }
+                catch (Exception ex)
+                {
+                    ;
+                }
+                //readx();
+                return sh_jsonresult;
             //}
-            //catch (Exception ex)
-            //{
-            //    int i = 0;
-            //}
-            DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
-            settings.UseSimpleDictionaryFormat = true;
-            DataContractJsonSerializer jsonSerielizer = new DataContractJsonSerializer(typeof(JsonOpenHABDataContract), settings);
-            ////jsonSerielizer.WriteObject(stream, sh_jsonresult);
-            sh_jsonresult = (JsonOpenHABDataContract)jsonSerielizer.ReadObject(stream);
-            //readx();
-            return sh_jsonresult;
         }
         //public async void readx()
         //{

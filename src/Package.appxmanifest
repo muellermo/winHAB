@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="3e6be8fa-a3ed-447c-8e2b-4d9533053375" Publisher="CN=Moritz" Version="1.0.0.0" />
+  <Identity Name="3e6be8fa-a3ed-447c-8e2b-4d9533053375" Publisher="CN=Moritz" Version="1.1.5628.1" />
   <Properties>
     <DisplayName>winHAB</DisplayName>
     <PublisherDisplayName>Moritz</PublisherDisplayName>
@@ -16,6 +16,11 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="winHAB.App">
       <m2:VisualElements DisplayName="winHAB" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="winHAB" ForegroundText="light" BackgroundColor="#464646" ToastCapable="true">
+        <m2:DefaultTile ShortName="winHAB" DefaultSize="square150x150Logo">
+          <m2:ShowNameOnTiles>
+            <m2:ShowOn Tile="square150x150Logo" />
+          </m2:ShowNameOnTiles>
+        </m2:DefaultTile>
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
     </Application>

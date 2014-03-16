@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Data.Xml.Dom;
 using Windows.Foundation;
@@ -24,7 +25,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using winHAB.ColorDialog;
 using winHAB.communication;
+using winHAB.communication.connectiontypes;
+using winHAB.communication.httpclient.get;
+using winHAB.communication.httpclient.post;
 using winHAB.FirstStart;
 using winHAB.gui;
 using winHAB.openhab_definition;
@@ -42,7 +47,7 @@ namespace winHAB
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet werden kann oder auf die innerhalb eines Rahmens navigiert werden kann.
     /// </summary>
-    public partial class MainPage : Page
+    public partial class MainPage : Page, INotifyPropertyChanged
     {
         #region Variablen
         private DispatcherTimer dispatcherTimer = new DispatcherTimer();
@@ -51,24 +56,50 @@ namespace winHAB
         private Stack<LinkedList<AbstractWidget>> previusWidgets = new Stack<LinkedList<AbstractWidget>>();
         private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         private PasswordVault passwordVault = new PasswordVault();
-        private GetJSON jsonDownloader;
+        private GetJson jsonDownloader;
         private Boolean settingsSetCorrectly = false;
         private Boolean _leftNavClearer = false;
+        public static Boolean _errorOccured = false;
+        private Boolean _taskReady { get; set; }
+        public static Boolean taskReady { get; set; }
+        //{
+        //    get { return _taskReady; }
+        //    set
+        //    {
+        //        _taskReady = value;
+        //        NotifyPropertyChanged("taskReady");
+        //    }
+        //}
+        #endregion
+        #region Only for Debugging
+        /// <summary>
+        /// 
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void NotifyPropertyChanged(String propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this,
+                    new PropertyChangedEventArgs(propertyName));
+            }
+        }
         #endregion
 
-        #region Constructor
+        #region Constructor and DispatcherTimer for keep the GUI up-to-date
         public MainPage()
         {
 
             this.InitializeComponent();
-
+            MainPage.taskReady = true;
+            taskObserver.Text = MainPage.taskReady.ToString();
             this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
 
             if (localSettings.Values["connectionType"] != null && localSettings.Values["connectionType"].ToString().Equals(ConnectionTypesEnum.HTTPSwithUsernameAndPassword.ToString()))
             {
                 try
                 {
-                    jsonDownloader = new GetJSON(localSettings.Values["url"].ToString(), "WIRD NICHT MEHR GEBRAUCHT!!!", Convert.ToInt32(localSettings.Values["port"].ToString()), localSettings.Values["username"].ToString(), passwordVault.Retrieve("winHAB", localSettings.Values["username"].ToString()).Password, true);
+                    jsonDownloader = new GetJson(localSettings.Values["url"].ToString(), "WIRD NICHT MEHR GEBRAUCHT!!!", Convert.ToInt32(localSettings.Values["port"].ToString()), localSettings.Values["username"].ToString(), passwordVault.Retrieve("winHAB", localSettings.Values["username"].ToString()).Password, true);
                     //Sets the Event, wich is called, when the Interface of obenHAB is dowloaded and readed correctly
                     jsonDownloader.sh_downloadFinished += jsonDownloader_sh_downloadFinished;
                     settingsSetCorrectly = true;
@@ -82,7 +113,7 @@ namespace winHAB
             {
                 try
                 {
-                    jsonDownloader = new GetJSON(localSettings.Values["url"].ToString(), "", Convert.ToInt32(localSettings.Values["port"].ToString()), true);
+                    jsonDownloader = new GetJson(localSettings.Values["url"].ToString(), "", Convert.ToInt32(localSettings.Values["port"].ToString()), true);
                     //Sets the Event, wich is called, when the Interface of obenHAB is dowloaded and readed correctly
                     jsonDownloader.sh_downloadFinished += jsonDownloader_sh_downloadFinished;
                     settingsSetCorrectly = true;
@@ -96,7 +127,7 @@ namespace winHAB
             {
                 try
                 {
-                    jsonDownloader = new GetJSON(localSettings.Values["username"].ToString(), "", Convert.ToInt32(localSettings.Values["port"].ToString()), localSettings.Values["username"].ToString(), localSettings.Values["password"].ToString());
+                    jsonDownloader = new GetJson(localSettings.Values["username"].ToString(), "", Convert.ToInt32(localSettings.Values["port"].ToString()), localSettings.Values["username"].ToString(), localSettings.Values["password"].ToString());
                     //Sets the Event, wich is called, when the Interface of obenHAB is dowloaded and readed correctly
                     jsonDownloader.sh_downloadFinished += jsonDownloader_sh_downloadFinished;
                     //If everything above was correctly, the GUI can be filled
@@ -111,7 +142,7 @@ namespace winHAB
             {
                 try
                 {
-                    jsonDownloader = new GetJSON(localSettings.Values["url"].ToString(), "", Convert.ToInt32(localSettings.Values["port"].ToString()));
+                    jsonDownloader = new GetJson(localSettings.Values["url"].ToString(), "", Convert.ToInt32(localSettings.Values["port"].ToString()));
                     //Sets the Event, wich is called, when the Interface of obenHAB is dowloaded and readed correctly
                     jsonDownloader.sh_downloadFinished += jsonDownloader_sh_downloadFinished;
                     settingsSetCorrectly = true;
@@ -133,24 +164,45 @@ namespace winHAB
             {
                 periodicTimer = ThreadPoolTimer.CreatePeriodicTimer((x) =>
                 {
-                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                    {
-                        //Use this function to access the GUI, from another Thread
-                    });
+                    //Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                    //{
+                    //    //Use this function to access the GUI, from another Thread
+                    //});
                     //parser.start();//OLD-FUNCTION
-                    jsonDownloader.connectAndLoad();
+                    if (/*!MainPage._errorOccured &&*/ MainPage.taskReady)
+                    {
+
+                        Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                        {
+                            //Use this function to access the GUI, from another Thread
+                            taskObserver.Text = MainPage.taskReady.ToString();
+                        });
+                        MainPage.taskReady = false;
+                        Task<String> xa = jsonDownloader.connectAndLoad();
+                    }
                 }, TimeSpan.FromSeconds(Convert.ToInt32(localSettings.Values["refreshTime"])));
             }
             else
             {
                 periodicTimer = ThreadPoolTimer.CreatePeriodicTimer((x) =>
                 {
-                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                    {
-                        //Use this function to access the GUI, from another Thread
-                    });
+                    //Dispatcher.RunAsync(CoreDispatcherPriority.Normal, Task.Run(() =>
+                    //{
+                    //    //Use this function to access the GUI, from another Thread
+                    //});
                     //parser.start();
-                    jsonDownloader.connectAndLoad();
+                    if (/*!MainPage._errorOccured &&*/ MainPage.taskReady)
+                    {
+
+                        Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                        {
+                            //Use this function to access the GUI, from another Thread
+                            taskObserver.Text = MainPage.taskReady.ToString();
+                        });
+                        MainPage.taskReady = false;
+                        Task<String> xa = jsonDownloader.connectAndLoad();
+
+                    }
                 }, TimeSpan.FromSeconds(5));
             }
             //}
@@ -182,14 +234,14 @@ namespace winHAB
         //Dictionary<String, Widget> currentWidgets = new Dictionary<String, Widget>();
         Widget tmp;
         int ix = 0;
-        async void jsonDownloader_sh_downloadFinished(JsonOpenHABDataContract result)
+        private async void jsonDownloader_sh_downloadFinished(JsonOpenHABDataContract result)
         {
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 if (once != true)
                 {
-                    LinkedListNode<Widget> first = result.homepage.widget.First;//.First.Value.widget.First.Value.linkedPage.widget.First.Value.linkedPage.widget.First;
+                    LinkedListNode<Widget> first = result.homepage.widget.First;
                     while (first != null)
                     {
                         if (first != null)
@@ -199,41 +251,30 @@ namespace winHAB
                                 currentWidgets.AddFirst(new FrameWidget(first.Value));
                                 if (first.Value.linkedPage != null || first.Value.widget != null)
                                 {
-                                    if (first.Value.label.Equals("Weather"))
-                                    {
-                                        ix++;
-                                    }
-                                    if (first.Value.label.Equals("Date"))
-                                    {
-                                        ix++;
-                                    }
-                                    leftNav.Items.Add(new FrameWidget(first.Value));
+                                    //leftNav.Items.Add(new FrameWidget(first.Value));
                                     if (first.Value.linkedPage != null)
                                         fillNavigation(first.Value.linkedPage.widget.First);
                                     if (first.Value.widget != null)
                                         fillNavigation(first.Value.widget.First);
                                 }
-
-                                else
+                                else if (first.Value.linkedPage == null && first.Value.widget == null)
                                 {
                                     mainNav.Items.Add(new FrameWidget(first.Value));
                                 }
                             }
-                            else if (first.Value.label.Equals(""))//If the Label is empty
-                            {
-                                if (first.Value.linkedPage != null)
-                                    fillNavigation(first.Value.linkedPage.widget.First);
-                                if (first.Value.widget != null)
-                                    fillNavigation(first.Value.widget.First);
-                            }
+
                             if (first.Value.type.Equals("Group"))
                             {
                                 currentWidgets.AddFirst(new GroupWidget(first.Value));
                                 if (first.Value.linkedPage != null || first.Value.widget != null)
                                 {
-                                    leftNav.Items.Add(new GroupWidget(first.Value));
+                                    //leftNav.Items.Add(new GroupWidget(first.Value));
+                                    if (first.Value.linkedPage != null)
+                                        fillNavigation(first.Value.linkedPage.widget.First);
+                                    if (first.Value.widget != null)
+                                        fillNavigation(first.Value.widget.First);
                                 }
-                                else
+                                else if (first.Value.linkedPage == null && first.Value.widget == null)
                                 {
                                     mainNav.Items.Add(new GroupWidget(first.Value));
                                 }
@@ -243,9 +284,13 @@ namespace winHAB
                                 currentWidgets.AddFirst(new ImageWidget(first.Value));
                                 if (first.Value.linkedPage != null || first.Value.widget != null)
                                 {
-                                    leftNav.Items.Add(new ImageWidget(first.Value));
+                                    //leftNav.Items.Add(new ImageWidget(first.Value));
+                                    if (first.Value.linkedPage != null)
+                                        fillNavigation(first.Value.linkedPage.widget.First);
+                                    if (first.Value.widget != null)
+                                        fillNavigation(first.Value.widget.First);
                                 }
-                                else
+                                else if (first.Value.linkedPage == null && first.Value.widget == null)
                                 {
                                     mainNav.Items.Add(new ImageWidget(first.Value));
                                 }
@@ -255,17 +300,32 @@ namespace winHAB
                                 currentWidgets.AddFirst(new TextWidget(first.Value));
                                 if (first.Value.linkedPage != null || first.Value.widget != null)
                                 {
-                                    leftNav.Items.Add(new TextWidget(first.Value));
+                                    //leftNav.Items.Add(new TextWidget(first.Value));
+                                    if (first.Value.linkedPage != null)
+                                        fillNavigation(first.Value.linkedPage.widget.First);
+                                    if (first.Value.widget != null)
+                                        fillNavigation(first.Value.widget.First);
                                 }
-                                else
+                                else if (first.Value.linkedPage == null && first.Value.widget == null)
                                 {
                                     mainNav.Items.Add(new TextWidget(first.Value));
                                 }
                             }
+                            //If the Label is empty
+                            else if (first.Value.label.Equals(""))
+                            {
+                                if (first.Value.linkedPage != null)
+                                    fillNavigation(first.Value.linkedPage.widget.First);
+                                if (first.Value.widget != null)
+                                    fillNavigation(first.Value.widget.First);
+                            }
+                            //else if (first.Value.linkedPage == null && first.Value.widget == null)
+                            //{
+                            //    mainNav.Items.Add(new TextWidget(first.Value));
+                            //}
                         }
                         first = first.Next;
-                    } //leftNav.Items.Add(currentFrameWidgets);
-                    //Frames.Source = currentWidgets;
+                    }
                     once = true;
                 }
                 updateUI();
@@ -411,7 +471,43 @@ namespace winHAB
                 }
                 first = first.Next;
             }
+            LinkedListNode<SliderWidget> first1 = currentSliderWidget.First;
+            //Widget tmp;
+            while (first1 != null)
+            {
+                JsonOpenHABDataContract.widgets.TryGetValue(first1.Value.widgetId, out tmp);
+                if (tmp != null)
+                {
+                    //if (mainNav.Items[0].GetType() == typeof(SwitchWidget))
+                    //{
+                    //    xx = (SwitchWidget)mainNav.Items[0];
+                    //    xx.icon = tmp.icon;
+                    //}
+                    first1.Value.icon = tmp.icon;
+                    first1.Value.label = tmp.label;
+                    //if(!first.Value.item.state.Equals(tmp.item.state))
+                    //{
+                    first1.Value.item = tmp.item;
+                    //if (tmp.item.state.Equals("ON"))
+                    //{
+                    //    first1.Value.guiState = true;
+                    //}
+                    //else if (tmp.item.state.Equals("OFF"))
+                    //{
+                    //    first1.Value.guiState = false;
+                    //}
+                    //}
+
+                }
+                first1 = first1.Next;
+            }
             JsonOpenHABDataContract.widgets.Clear();
+            MainPage.taskReady = true;
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                //Use this function to access the GUI, from another Thread
+                taskObserver.Text = MainPage.taskReady.ToString();
+            });
         }
         #endregion
 
@@ -424,14 +520,15 @@ namespace winHAB
             {
                 if (leftNav.SelectedItem != null && leftNav.SelectedItem.GetType() == typeof(FrameWidget))
                 {
+                    mainNav.Items.Clear();
                     FrameWidget currentFrameWidget = (FrameWidget)leftNav.SelectedItem;
-                    //    if (currentFrameWidget.linkedPage != null)
-                    //    {
-                    //        currentFrameWidget.hasChildren = true;
-                    //        LinkedListNode<Widget> first = currentFrameWidget.linkedPage.widget.First;
-                    //        backupNavigation();
-                    //        fillNavigation(first);
-                    //    }
+                    if (currentFrameWidget.linkedPage != null)
+                    {
+                        currentFrameWidget.hasChildren = true;
+                        LinkedListNode<Widget> first = currentFrameWidget.linkedPage.widget.First;
+                        backupNavigation();
+                        fillNavigation(first);
+                    }
                     if (currentFrameWidget.widget != null)
                     {
                         currentFrameWidget.hasChildren = true;
@@ -445,10 +542,23 @@ namespace winHAB
                     //Clears the mainNav to load new Items of GroupWidget
                     mainNav.Items.Clear();
                     GroupWidget currentFrameWidget = (GroupWidget)leftNav.SelectedItem;
+                    Boolean isAnyGroup = false;
                     if (currentFrameWidget.linkedPage != null)
                     {
                         LinkedListNode<Widget> first = currentFrameWidget.linkedPage.widget.First;
-                        backupNavigation();
+                        LinkedListNode<Widget> tmpWidget = first;
+
+                        while (tmpWidget != null)
+                        {
+                            if (tmpWidget.Value.type.Equals("Group"))
+                                isAnyGroup = true;
+                            tmpWidget = tmpWidget.Next;
+
+                        }
+                        if (isAnyGroup)
+                        {
+                            backupNavigation();
+                        }
                         fillNavigation(first);
 
                     }
@@ -503,13 +613,28 @@ namespace winHAB
                 //}
                 if (leftNav.SelectedItem != null && leftNav.SelectedItem.GetType() == typeof(TextWidget))
                 {
+                    mainNav.Items.Clear();
                     TextWidget currentFrameWidget = (TextWidget)leftNav.SelectedItem;
+                    Boolean isAnyGroup = false;
                     if (currentFrameWidget.linkedPage != null)
                     {
                         LinkedListNode<Widget> first = currentFrameWidget.linkedPage.widget.First;
-                        backupNavigation();
-                        fillNavigation(first);
 
+                        LinkedListNode<Widget> tmpWidget = first;
+
+                        while (tmpWidget != null)
+                        {
+                            if (tmpWidget.Value.type.Equals("Group"))
+                                isAnyGroup = true;
+                            tmpWidget = tmpWidget.Next;
+
+                        }
+                        if (isAnyGroup)
+                        {
+                            backupNavigation();
+                        }
+                        fillNavigation(first);
+                        //}
                     }
                     if (currentFrameWidget.widget != null)
                     {
@@ -572,16 +697,26 @@ namespace winHAB
             LinkedListNode<Widget> first = widget;
             while (first != null)
             {
-                if (first.Value.type.Equals("Frame") && (first.Value.widget != null && first.Value.widget.Count > 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count > 1))
+                if (first.Value.type.Equals("Frame") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
                 {
-                    leftNav.Items.Add(new FrameWidget(first.Value));
+                    //if (first.Value.linkedPage != null && first.Value.linkedPage.widget.First.Value.type.Equals("Frame"))
+                    //{
+                    //    mainNav.Items.Add(new FrameWidget(first.Value));
+                    //}
+                    //if (first.Value.widget != null && first.Value.widget.First.Value.type.Equals("Frame"))
+                    //{
+                    //    mainNav.Items.Add(new FrameWidget(first.Value));
+                    //}
+                    //leftNav.Items.Add(new FrameWidget(first.Value));
+                    mainNav.Items.Add(new FrameWidget(first.Value));
+                    fillNavigation(first.Value.widget.First);
                     temp_widgets.AddFirst(new FrameWidget(first.Value));
                 }
                 else if (first.Value.type.Equals("Frame"))
                 {
                     mainNav.Items.Add(new FrameWidget(first.Value));
                 }
-                if (first.Value.type.Equals("Group") && (first.Value.widget != null && first.Value.widget.Count > 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count > 1))
+                if (first.Value.type.Equals("Group") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))// && first.Value.linkedPage.widget.First.Value.type.Equals("Group"))
                 {
                     leftNav.Items.Add(new GroupWidget(first.Value));
                     temp_widgets.AddFirst(new GroupWidget(first.Value));
@@ -590,7 +725,7 @@ namespace winHAB
                 {
                     mainNav.Items.Add(new GroupWidget(first.Value));
                 }
-                if (first.Value.type.Equals("Image") && (first.Value.widget != null && first.Value.widget.Count > 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count > 1))
+                if (first.Value.type.Equals("Image") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
                 {
                     leftNav.Items.Add(new ImageWidget(first.Value));
                     temp_widgets.AddFirst(new ImageWidget(first.Value));
@@ -599,7 +734,7 @@ namespace winHAB
                 {
                     mainNav.Items.Add(new ImageWidget(first.Value));
                 }
-                if (first.Value.type.Equals("Text") && (first.Value.widget != null && first.Value.widget.Count > 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count > 1))
+                if (first.Value.type.Equals("Text") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))// && first.Value.linkedPage.widget.First.Value.type.Equals("Frame"))
                 {
                     leftNav.Items.Add(new TextWidget(first.Value));
                     temp_widgets.AddFirst(new TextWidget(first.Value));
@@ -608,7 +743,7 @@ namespace winHAB
                 {
                     mainNav.Items.Add(new TextWidget(first.Value));
                 }
-                if (first.Value.type.Equals("Slider") && (first.Value.widget != null && first.Value.widget.Count > 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count > 1))
+                if (first.Value.type.Equals("Slider") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
                 {
                     leftNav.Items.Add(new SliderWidget(first.Value));
                     temp_widgets.AddFirst(new SliderWidget(first.Value));
@@ -617,7 +752,7 @@ namespace winHAB
                 {
                     mainNav.Items.Add(new SliderWidget(first.Value));
                 }
-                if (first.Value.type.Equals("Switch") && (first.Value.widget != null && first.Value.widget.Count > 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count > 1))
+                if (first.Value.type.Equals("Switch") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
                 {
                     leftNav.Items.Add(new SwitchWidget(first.Value));
                     temp_widgets.AddFirst(new SwitchWidget(first.Value));
@@ -626,7 +761,7 @@ namespace winHAB
                 {
                     mainNav.Items.Add(new SwitchWidget(first.Value));
                 }
-                if (first.Value.type.Equals("Video") && (first.Value.widget != null && first.Value.widget.Count > 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count > 1))
+                if (first.Value.type.Equals("Video") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
                 {
                     leftNav.Items.Add(new VideoWidget(first.Value));
                     temp_widgets.AddFirst(new VideoWidget(first.Value));
@@ -635,7 +770,7 @@ namespace winHAB
                 {
                     mainNav.Items.Add(new VideoWidget(first.Value));
                 }
-                if (first.Value.type.Equals("NumberItem") && (first.Value.widget != null && first.Value.widget.Count > 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count > 1))
+                if (first.Value.type.Equals("NumberItem") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
                 {
                     leftNav.Items.Add(new NumberWidget(first.Value));
                     temp_widgets.AddFirst(new NumberWidget(first.Value));
@@ -644,6 +779,46 @@ namespace winHAB
                 {
                     mainNav.Items.Add(new NumberWidget(first.Value));
                 }
+                if (first.Value.type.Equals("Colorpicker") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
+                {
+                    leftNav.Items.Add(new ColorWidget(first.Value));
+                    temp_widgets.AddFirst(new ColorWidget(first.Value));
+                }
+                else if (first.Value.type.Equals("Colorpicker"))
+                {
+                    mainNav.Items.Add(new ColorWidget(first.Value));
+                }
+                if (first.Value.type.Equals("Selection") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
+                {
+                    leftNav.Items.Add(new SelectionWidget(first.Value));
+                    temp_widgets.AddFirst(new SelectionWidget(first.Value));
+                }
+                else if (first.Value.type.Equals("Selection"))
+                {
+                    mainNav.Items.Add(new SelectionWidget(first.Value));
+                }
+                if (first.Value.type.Equals("Setpoint") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
+                {
+                    leftNav.Items.Add(new SetpointWidget(first.Value));
+                    temp_widgets.AddFirst(new SetpointWidget(first.Value));
+                }
+                else if (first.Value.type.Equals("Setpoint"))
+                {
+                    mainNav.Items.Add(new SetpointWidget(first.Value));
+                }
+                if (first.Value.type.Equals("Chart") && (first.Value.widget != null && first.Value.widget.Count >= 1 || first.Value.linkedPage != null && first.Value.linkedPage.widget.Count >= 1))
+                {
+                    leftNav.Items.Add(new ChartWidget(first.Value));
+                    temp_widgets.AddFirst(new ChartWidget(first.Value));
+                }
+                else if (first.Value.type.Equals("Chart"))
+                {
+                    mainNav.Items.Add(new ChartWidget(first.Value));
+                }
+                //if (!first.Value.type.Equals("Frame") || first.Value.type.Equals("Group") || first.Value.type.Equals("Image") || first.Value.type.Equals("Switch") || first.Value.type.Equals("Slider") || first.Value.type.Equals("Text") || first.Value.type.Equals("Chart"))
+                //{
+
+                //}
                 //else if(first.Value.widget != null || first.Value.linkedPage != null)
                 //{
                 //    leftNav.Items.Add(first.Value.type);
@@ -652,10 +827,10 @@ namespace winHAB
                 //{
                 //    mainNav.Items.Add(first.Value);
                 //}
-                //////if (first.Value.type.Equals("Webview") && (first.Value.widget != null || first.Value.linkedPage != null))
-                //////    leftNav.Items.Add(new WebViewWidget(first.Value));
-                //////else if (first.Value.type.Equals("Webview"))
-                //////    mainNav.Items.Add(new WebViewWidget(first.Value));
+                //if (first.Value.type.Equals("Webview") && (first.Value.widget != null || first.Value.linkedPage != null))
+                //    leftNav.Items.Add(new WebViewWidget(first.Value));
+                //else if (first.Value.type.Equals("Webview"))
+                //    mainNav.Items.Add(new WebViewWidget(first.Value));
                 first = first.Next;
             }
             //Frames.Source = temp_widgets;
@@ -757,12 +932,19 @@ namespace winHAB
         }
         #endregion
 
-        private async void refreshButton_Tapped(object sender, TappedRoutedEventArgs e)
+        /// <summary>
+        /// Is used to restart the HttpClient when the Connection was lost or an error ocurred
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void refreshButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MessageDialog dialog = new MessageDialog("An Error appeared, while refreshing the page manualy.", "Refreshingerror");
-            dialog.Options = MessageDialogOptions.AcceptUserInputAfterDelay;
+            //MessageDialog dialog = new MessageDialog("An Error appeared, while refreshing the page manualy.", "Refreshingerror");
+            //dialog.Options = MessageDialogOptions.AcceptUserInputAfterDelay;
 
-            IUICommand command = await dialog.ShowAsync();
+            //IUICommand command = await dialog.ShowAsync();
+            MainPage.taskReady = true;
+            MainPage._errorOccured = false;
         }
 
         private void colorDialogButton_Tapped(object sender, TappedRoutedEventArgs e)
@@ -770,6 +952,13 @@ namespace winHAB
             this.Frame.Navigate(typeof(ColorDialog.ColorDialog));
         }
 
+
+        /// <summary>
+        /// If there is a Widget, that contains a Slider.
+        /// The Slider-Event is read and send to the PostMessage-Object 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void sliderWidgetsldr_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (sender.GetType() == typeof(Slider))
@@ -779,6 +968,14 @@ namespace winHAB
                 int i = 0;
                 sendMessage.sendInstruction(item, Convert.ToString(slider.Value));
             }
+        }
+
+        private void colorPickerButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            Item item = button.Tag as Item;
+            ColorDialogFlyout colorDialogSettingsFlyout = new ColorDialogFlyout(item);
+            colorDialogSettingsFlyout.Show();
         }
 
     }

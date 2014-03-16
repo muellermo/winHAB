@@ -36,7 +36,7 @@ namespace winHAB.openHAB_definition.openHAB_Widgets.openHAB_NonLinkableWidget
             this.type = widget.type;
             this.label = widget.label;
             this.icon = widget.icon;
-            //this.widget = widget.widget;
+            this.widget = widget.widget;
             this.linkedPage = widget.linkedPage;
             this.item = widget.item;
             this._once = true;
@@ -44,7 +44,7 @@ namespace winHAB.openHAB_definition.openHAB_Widgets.openHAB_NonLinkableWidget
             base.type = widget.type;
             base.label = widget.label;
             base.icon = widget.icon;
-            //base.widget = widget.widget;
+            base.widget = widget.widget;
             base.linkedPage = widget.linkedPage;
             base.item = widget.item;
             base._once = true;

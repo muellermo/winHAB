@@ -61,7 +61,7 @@ namespace JSON_Parser.Parser
     }
     #endregion
     #region Widget
-    //[DataContract]
+    [DataContract]
     public class Widget : INotifyPropertyChanged
     {
         public Boolean guiState { get; set; }
@@ -77,17 +77,29 @@ namespace JSON_Parser.Parser
             set
             {
                 _widgetId = value;
-                try { 
-                JsonOpenHABDataContract.widgets.Add(this.widgetId, this);
-                }   catch
-                {}
+                try
+                {
+                    JsonOpenHABDataContract.widgets.Add(this.widgetId, this);
+                }
+                catch
+                { }
                 NotifyPropertyChanged("widgetId");
             }
         }
         [DataMember]
         private String _type { get; set; }
         [DataMember]
-        public String type { get { return _type; } set { _type = value; } }
+        public String type
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+            }
+        }
         [DataMember]
         private String _label { get; set; }
         [DataMember]
@@ -122,27 +134,8 @@ namespace JSON_Parser.Parser
                 NotifyPropertyChanged("icon");
             }
         }
-        //[DataMember]
-        //public String _type { get; set; }
-        //[DataMember]
-        //public String type
-        //{
-        //    get
-        //    {
-        //        return _type;
-        //    }
-        //    set
-        //    {
-        //        _type = value;
-        //    }
-        //}
-
-        //[DataMember(Name = "widget")]
-        //public Dictionary<String,Widget> x { get; set; }
         [DataMember]
-        public LinkedList<Widget> widget { get; set; }// = new LinkedList<Widget>();// { get; set; }
-        //[DataMember(Name = "widget",IsRequired=true)]
-        //public List<Widget> widget {get;set;}// = new LinkedList<Widget>();// { get; set; }
+        public LinkedList<Widget> widget { get; set; }
         [DataMember]
         public LinkedPage linkedPage { get; set; }
         [DataMember(Name = "item")]
@@ -151,6 +144,20 @@ namespace JSON_Parser.Parser
         private String _url { get; set; }
         [DataMember]
         public String url { get { return _url; } set { _url = value; } }
+        [DataMember]
+        private LinkedList<Mapping> _mapping { get; set; }
+        [DataMember]
+        public LinkedList<Mapping> mapping
+        {
+            get
+            {
+                return _mapping;
+            }
+            set
+            {
+                _mapping = value;
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(String propertyName)
         {
@@ -259,6 +266,41 @@ namespace JSON_Parser.Parser
         public String icon { get; set; }
         [DataMember]
         public LinkedList<Widget> widget { get; set; }
+    }
+    #endregion
+
+    #region Mapping
+    [DataContract]
+    public class Mapping
+    {
+        [DataMember]
+        private String _command { get; set; }
+        [DataMember]
+        public String command
+        {
+            get
+            {
+                return _command;
+            }
+            set
+            {
+                _command = value;
+            }
+        }
+        [DataMember]
+        private String _label { get; set; }
+        [DataMember]
+        public String label
+        {
+            get
+            {
+                return _label;
+            }
+            set
+            {
+                _label = value;
+            }
+        }
     }
     #endregion
 }
